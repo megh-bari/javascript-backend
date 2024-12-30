@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const subTodoSchema = new mongoose.Schema({
     content:{
-        typeof: String,
+        type: String,
         required: true,
     },
     complete:{
-        typeof: Boolean,
+        type: Boolean,
         default: false
     },
     createdBy:{

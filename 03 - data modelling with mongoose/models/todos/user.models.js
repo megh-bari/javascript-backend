@@ -4,21 +4,21 @@ const userSchema = new mongoose.Schema(
   {
     // data field
     username: {
-      typeof: String,
+      type: String,
       required: true,
       unique: true,
       lowercase: true,
     },
 
     email: {
-      typeof: String,
+      type: String,
       required: true,
       lowercase: true,
       unique: true,
     },
 
     password: {
-      typeof: String,
+      type: String,
       required: true,
       min: [8, "password must be at least 8 character"],
     },
