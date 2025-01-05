@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
-import fs from "fs/promises";
+import fs from 'fs';  
 
 // Configuration
 cloudinary.config({
@@ -17,7 +17,15 @@ const uploadOnCloudinary = async (localFilePath) => {
       resource_type: "auto",
     });
 
-    console.log("File uploaded to Cloudinary:", response.url);
+    // console.log("Response:", response);
+
+    // console.log("File uploaded to Cloudinary:", response.url);
+    try {
+      await fs.unlinkSync(localFilePath);
+      console.log(`File at ${localFilePath} was successfully deleted.`);
+    } catch (error) {
+      console.error(`Failed to delete file: ${error.message}`);
+    }
     return response;
   } catch (error) {
     console.error("Error uploading to Cloudinary:", error.message);

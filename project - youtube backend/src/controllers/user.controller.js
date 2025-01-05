@@ -25,7 +25,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // Extract user details from the request body
   const { fullName, username, email, password } = req.body;
-  console.log("email", email);
+  // console.log("email", email);
 
   // Validate that none of the required fields are empty
   if (
@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // Check if a user with the given username or email already exists in the database
-  const existedUser = User.findOne({
+  const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 
@@ -46,7 +46,18 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // Extract file paths from the uploaded files for avatar and cover image
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+
+  let coverImageLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImageLocalPath = req.files.coverImage[0].path
+  }
+
+  // console.log(req.files)
 
   // Validate that the avatar file is provided
   if (!avatarLocalPath) {
@@ -73,8 +84,12 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
   });
 
+  // console.log(user)
+
   // Find the newly created user and remove sensitive fields (password, refreshToken) from the response
-  const createdUser = user.findById(user._id).select("-password -refreshToken");
+  const createdUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
 
   // Check if the user creation was successful
   if (!createdUser) {
@@ -84,7 +99,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // Return a successful response with the created user data
   return res
     .status(201)
-    .json(new apiResponse(200, createdUser, "User registered successfully"));
+    .json(new ApiResponse(200, createdUser, "User registered successfully"));
 });
 
 export default registerUser;
